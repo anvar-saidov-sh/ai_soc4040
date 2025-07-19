@@ -1,18 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>SuhbatAI</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Suhbat AI – Smart Interview Assistant</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
 <body>
-    <h1>🎙️ SuhbatAI – AI Interviewer</h1>
-    <button id="startBtn">▶️ Start Recording</button>
-    <button id="stopBtn" disabled>⏹️ Stop Recording</button>
-    <button id="sendBtn" disabled>📤 Send</button>
-    <p id="status">Status: Idle</p>
-    <p><strong>AI Response:</strong></p>
-    <div id="response"></div>
+  <!-- Hero -->
+  <section id="hero" class="text-center bg-primary text-white py-5">
+    <div class="container">
+      <h1 class="display-4 fw-bold">Suhbat AI</h1>
+      <p class="lead">Онлайн собеседование с искусственным интеллектом на основе описания вакансии</p>
+      <a href="#test" class="btn btn-light btn-lg mt-3">Попробовать</a>
+    </div>
+  </section>
 
-    <script src="script.js"></script>
+  <!-- Problem -->
+  <section id="problem" class="section bg-light">
+    <div class="container text-center">
+      <h2 class="mb-4">Проблема</h2>
+      <p>Рекрутерам и HR-менеджерам сложно проводить первичные собеседования с большим числом кандидатов. Это отнимает много времени и ресурсов.</p>
+    </div>
+  </section>
+
+  <!-- Solution -->
+  <section id="solution" class="section">
+    <div class="container text-center">
+      <h2 class="mb-4">Решение</h2>
+      <p>Suhbat AI автоматизирует собеседования, задавая вопросы по описанию вакансии и анализируя ответы кандидатов.</p>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="how-it-works" class="section bg-light">
+    <div class="container text-center">
+      <h2 class="mb-5">Как это работает</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <i class="fas fa-file-alt fa-3x mb-3 text-primary"></i>
+          <h5>1. Вставьте описание вакансии</h5>
+        </div>
+        <div class="col-md-4">
+          <i class="fas fa-comments fa-3x mb-3 text-primary"></i>
+          <h5>2. AI начинает интервью</h5>
+        </div>
+        <div class="col-md-4">
+          <i class="fas fa-check-circle fa-3x mb-3 text-primary"></i>
+          <h5>3. Получите оценку кандидата</h5>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing" class="section">
+    <div class="container text-center">
+      <h2 class="mb-5">Тарифы</h2>
+      <div class="row justify-content-center">
+        <div class="col-md-4">
+          <div class="card shadow">
+            <div class="card-body">
+              <h5 class="card-title">Pro Plan</h5>
+              <h3 class="card-price">$49<span class="text-muted fs-6">/мес</span></h3>
+              <ul class="list-unstyled my-3">
+                <li><i class="fas fa-check text-success"></i> Неограниченные интервью</li>
+                <li><i class="fas fa-check text-success"></i> Доступ к аналитике</li>
+                <li><i class="fas fa-check text-success"></i> Приоритетная поддержка</li>
+              </ul>
+              <a href="#" class="btn btn-primary">Выбрать</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Roadmap -->
+  <section id="roadmap" class="section bg-light">
+    <div class="container text-center">
+      <h2 class="mb-5">План развития</h2>
+      <div class="row g-4">
+        <div class="col-md-3">
+          <div class="roadmap-step">v1<br><small>Текстовое интервью</small></div>
+        </div>
+        <div class="col-md-3">
+          <div class="roadmap-step">v2<br><small>Голосовое интервью</small></div>
+        </div>
+        <div class="col-md-3">
+          <div class="roadmap-step">v3<br><small>Оценка кандидатов</small></div>
+        </div>
+        <div class="col-md-3">
+          <div class="roadmap-step">v4<br><small>Интеграция с HR-системами</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Test Interview -->
+  <section id="test" class="section">
+    <div class="container">
+      <h2 class="text-center mb-4">Тестовое интервью</h2>
+      <form id="job-form" class="mb-4">
+        <label for="job-desc" class="form-label">Вставьте описание вакансии:</label>
+        <textarea class="form-control" id="job-desc" rows="4" required></textarea>
+        <button type="submit" class="btn btn-primary mt-2">Начать интервью</button>
+      </form>
+
+      <div id="chat-box" class="border rounded p-3 bg-white mb-3" style="height: 300px; overflow-y: auto;"></div>
+
+      <form id="chat-form" class="d-flex">
+        <input type="text" id="user-input" class="form-control me-2" placeholder="Ваш ответ..." required />
+        <button type="submit" class="btn btn-success">Отправить</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="section bg-light">
+    <div class="container text-center">
+      <h2 class="mb-4">Контакты</h2>
+      <p>По вопросам сотрудничества: <a href="mailto:hello@suhbatai.uz">hello@suhbatai.uz</a></p>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/script.js"></script>
 </body>
 </html>

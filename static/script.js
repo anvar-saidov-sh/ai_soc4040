@@ -1,60 +1,48 @@
-let mediaRecorder;
-let audioChunks = [];
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("✅ script.js loaded");
+  const jobForm = document.getElementById("job-form");
+  const chatForm = document.getElementById("chat-form");
+  const jobDesc = document.getElementById("job-desc");
+  const userInput = document.getElementById("user-input");
+  const chatBox = document.getElementById("chat-box");
 
-const startBtn = document.getElementById("startBtn");
-const stopBtn = document.getElementById("stopBtn");
-const sendBtn = document.getElementById("sendBtn");
-const status = document.getElementById("status");
-const responseDiv = document.getElementById("response");
+  function appendMessage(text, sender) {
+    const div = document.createElement("div");
+    div.classList.add("message", sender);
+    div.textContent = text;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
 
-startBtn.onclick = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder = new MediaRecorder(stream);
-    audioChunks = [];
+  jobForm.addEventListener("submit", async e => {
+    e.preventDefault();
+    const desc = jobDesc.value.trim();
+    if (!desc) return;
+    chatBox.innerHTML = "";
+    appendMessage("📄 Вакансия отправлена...", "user");
+    const res = await fetch("/set_job_description", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ description: desc })
+    });
+    const data = await res.json();
+    if (data.message) appendMessage(data.message, "ai");
+    else appendMessage("❌ "+data.error, "ai");
+  });
 
-    mediaRecorder.ondataavailable = event => {
-        if (event.data.size > 0) {
-            audioChunks.push(event.data);
-        }
-    };
-
-    mediaRecorder.onstop = () => {
-        sendBtn.disabled = false;
-    };
-
-    mediaRecorder.start();
-    startBtn.disabled = true;
-    stopBtn.disabled = false;
-    status.textContent = "Status: Recording...";
-};
-
-stopBtn.onclick = () => {
-    mediaRecorder.stop();
-    stopBtn.disabled = true;
-    status.textContent = "Status: Recording stopped.";
-};
-
-sendBtn.onclick = async () => {
-    const audioBlob = new Blob(audioChunks, { type: "audio/mp3" });
-    const formData = new FormData();
-    formData.append("audio", audioBlob, "recording.mp3");
-
-    status.textContent = "Status: Sending...";
-
-    try {
-        const response = await fetch("/interview", {
-            method: "POST",
-            body: formData,
-        });
-
-        const data = await response.json();
-        responseDiv.textContent = data.response;
-        status.textContent = "Status: Done.";
-    } catch (err) {
-        status.textContent = "Status: Error sending audio.";
-        responseDiv.textContent = err.toString();
-    }
-
-    sendBtn.disabled = true;
-    startBtn.disabled = false;
-};
+  chatForm.addEventListener("submit", async e => {
+    e.preventDefault();
+    const msg = userInput.value.trim();
+    if (!msg) return;
+    appendMessage(msg, "user");
+    userInput.value = "";
+    const res = await fetch("/interview", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ message: msg })
+    });
+    const data = await res.json();
+    if (data.answer) appendMessage(data.answer, "ai");
+    else appendMessage("❌ "+data.error, "ai");
+  });
+});
