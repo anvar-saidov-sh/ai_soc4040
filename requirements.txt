@@ -1,0 +1,26 @@
+# Core Python libraries
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
+tqdm
+
+# PyTorch for ML/DL
+torch
+torchvision
+torchaudio
+
+# Django for backend
+Django>=4.2
+
+# PostgreSQL database adapter for Python
+psycopg2-binary
+
+# Optional: for environment variables
+python-dotenv
+
+# Optional: Jupyter for notebooks
+jupyter
+
+# project  --- IGNORE ---

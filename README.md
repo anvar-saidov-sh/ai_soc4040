@@ -1,37 +1,38 @@
 # SuhbatAI
 
-**SuhbatAI** is an intelligent platform designed to assist Human Resources (HR) departments in evaluating candidates efficiently and effectively. It leverages AI technology to conduct interviews, assess skills, and provide insights to streamline the hiring process.
+**SuhbatAI** is an intelligent platform designed to assist HR departments and tech companies in evaluating **programming job candidates** with speed, accuracy, and fairness. It leverages AI-driven assessments, coding evaluations, and analytical tools to streamline the technical hiring process.
 
 ## Features
 
-- **Automated Candidate Assessment**  
-  SuhbatAI conducts preliminary interviews and evaluates candidates based on predefined criteria, reducing the time HR teams spend on initial screening.
+- **Automated Technical Assessment**  
+  Conducts structured, AI-guided interviews focused on programming fundamentals, algorithms, data structures, and problem-solving.
 
-- **Skill Testing**  
-  Offers customized tests for different roles to objectively measure technical and soft skills.
+- **Coding Skill Testing**  
+  Provides customizable coding exams, debugging tasks, and code quality evaluations tailored to different programming roles.
 
-- **Interview Analytics**  
-  Provides detailed reports and scoring to help HR make data-driven hiring decisions.
+- **Interview & Code Analytics**  
+  Generates detailed reports including performance scores, strengths, weaknesses, algorithmic thinking, and coding style patterns.
 
-- **Integration with HR Tools**  
-  Can be connected with existing HR management systems to maintain a smooth workflow.
+- **Integration with HR Systems**  
+  Easily connects with existing ATS/HRM platforms for seamless workflow and automated candidate tracking.
 
 - **Candidate Experience Enhancement**  
-  Ensures a consistent and professional interview experience, giving candidates clear feedback and structured evaluation.
+  Ensures a consistent, fair, and professional evaluation experience—providing candidates with structured tasks and clear feedback.
 
 ## Benefits
 
-- Saves time and resources for HR departments  
-- Reduces bias in initial candidate screening  
-- Standardizes evaluation process for better comparison  
-- Provides actionable insights for hiring decisions  
+- Saves significant time and resources in technical hiring  
+- Reduces human bias in initial developer screening  
+- Standardizes skill evaluation for fair comparison  
+- Produces actionable insights for smarter hiring decisions
 
 ## Use Cases
 
-- Pre-screening job applicants for technical or managerial roles  
-- Conducting AI-driven interviews for remote recruitment  
-- Generating reports for candidate performance analysis  
+- Pre-screening candidates for software engineering roles  
+- Automated coding challenge evaluation  
+- AI-driven remote programming interviews  
+- Technical skill performance reporting for HR & engineering managers
 
 ---
 
-**SuhbatAI** aims to empower HR teams to focus on strategic decisions while letting AI handle repetitive assessment tasks, ultimately improving recruitment quality and efficiency.
+**SuhbatAI** empowers HR and engineering teams to focus on strategic decisions while letting AI handle repetitive screening tasks—ultimately improving both the **speed** and **quality** of recruiting developers.
