@@ -5,31 +5,35 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parents[2]
 
 # Correct folder name: datasets
-DATASETS_DIR = BASE_DIR / "datasets"
+DATASET_DIR = BASE_DIR / "datasets"
 
 def load_questions_dataset():
     """
-    Load all JSON question files from the datasets directory.
+    Load all JSON question files from the dataset directory and normalize keys.
     Returns:
-        list[dict]: A list of question objects aggregated from all JSON files.
+        list[dict]: A list of question objects with consistent keys: 'Question' and 'Answer'.
     """
     questions = []
+    if not DATASET_DIR.exists():
+        raise FileNotFoundError(f"Dataset directory not found: {DATASET_DIR}")
 
-    if not DATASETS_DIR.exists():
-        raise FileNotFoundError(f"Datasets directory not found: {DATASETS_DIR}")
-
-    for file in DATASETS_DIR.glob("*.json"):
+    for file in DATASET_DIR.glob("*.json"):
         try:
-            with file.open("r", encoding="utf-8") as f:
+            with open(file, "r", encoding="utf-8") as f:
                 data = json.load(f)
 
-                # Normalize data
+                # Convert single object to list
                 if isinstance(data, dict):
-                    questions.append(data)
-                elif isinstance(data, list):
-                    questions.extend(data)
-                else:
-                    print(f"Skipping file {file}: unsupported JSON structure")
+                    data = [data]
+
+                for q in data:
+                    # Normalize keys: map 'tag' → 'Answer'
+                    answer = q.get("Answer") or q.get("tag") or ""
+                    question_text = q.get("Question") or q.get("question") or ""
+                    questions.append({
+                        "Question": question_text,
+                        "Answer": answer
+                    })
 
         except json.JSONDecodeError as e:
             print(f"Failed to parse {file}: {e}")
