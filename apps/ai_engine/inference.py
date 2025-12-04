@@ -1,31 +1,39 @@
-import random
 
-def evaluate_candidate(questions, candidate_answers=None):
+from typing import List, Dict
+
+def evaluate_candidate(questions: List[Dict], candidate_answers: List[str] = None) -> Dict:
     """
-    Simple MVP evaluator.
-    - Takes loaded questions from dataset
-    - Optionally uses candidate answers
-    - Returns a dummy score and selected questions
+    Evaluate a candidate's answers against the questions dataset.
 
     Args:
-        questions (list[dict]): Loaded question dataset
-        candidate_answers (dict): Optional answers candidate provided
+        questions (list[dict]): List of question objects, each containing "Question" and "Answer".
+        candidate_answers (list[str], optional): List of candidate answers corresponding to each question.
+            If None, will generate dummy answers (for testing).
 
     Returns:
-        dict: Evaluation summary
+        dict: Dictionary with score, total questions, and number of correct answers.
     """
-
     if not questions:
-        return {"error": "No questions available"}
+        return {"score": 0, "total_questions": 0, "correct_answers": 0, "error": "No questions found"}
 
-    # For MVP, assign a random score
-    score = round(random.uniform(40, 95), 2)
+    total_questions = len(questions)
 
-    # Select 5 random questions for the interview
-    sample_questions = random.sample(questions, min(5, len(questions)))
+    # For MVP testing: generate dummy answers if not provided
+    if candidate_answers is None:
+        candidate_answers = [q["Answer"] for q in questions]  # assume candidate knows everything
+
+    correct = 0
+
+    for q, ans in zip(questions, candidate_answers):
+        correct_answer = q.get("Answer", "").strip().lower()
+        candidate_answer = ans.strip().lower()
+        if candidate_answer == correct_answer:
+            correct += 1
+
+    score = (correct / total_questions) * 100
 
     return {
-        "score": score,
-        "questions_used": sample_questions,
-        "total_questions": len(questions)
+        "score": round(score, 2),
+        "correct_answers": correct,
+        "total_questions": total_questions
     }
