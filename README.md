@@ -36,6 +36,9 @@
 ---
 
 **SuhbatAI** empowers HR and engineering teams to focus on strategic decisions while letting AI handle repetitive screening tasks—ultimately improving both the **speed** and **quality** of recruiting developers.
+
 # Contributors
+
+This project exists thanks to all the people who [contribute](CONTRIBUTING.md).
 
 [![Contributors](https://contrib.rocks/image?repo=anvar-saidov-sh/ai_soc4040)](https://github.com/anvar-saidov-sh/ai_soc4040/graphs/contributors)
