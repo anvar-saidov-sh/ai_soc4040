@@ -1,39 +1,26 @@
+import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
-from typing import List, Dict
+def score_answer(candidate_answer, correct_answer):
+    """Compute similarity between candidate answer and correct answer."""
+    vectorizer = CountVectorizer().fit([candidate_answer, correct_answer])
+    vectors = vectorizer.transform([candidate_answer, correct_answer])
+    sim = cosine_similarity(vectors)[0, 1]
+    return sim * 100  # scale to 0-100
 
-def evaluate_candidate(questions: List[Dict], candidate_answers: List[str] = None) -> Dict:
+def evaluate_candidate(questions, candidate_answers):
     """
-    Evaluate a candidate's answers against the questions dataset.
-
-    Args:
-        questions (list[dict]): List of question objects, each containing "Question" and "Answer".
-        candidate_answers (list[str], optional): List of candidate answers corresponding to each question.
-            If None, will generate dummy answers (for testing).
-
+    Evaluate a list of candidate answers against the dataset questions.
+    
     Returns:
-        dict: Dictionary with score, total questions, and number of correct answers.
+        dict: {'score': average_score, 'scores_per_question': list_of_scores}
     """
-    if not questions:
-        return {"score": 0, "total_questions": 0, "correct_answers": 0, "error": "No questions found"}
-
-    total_questions = len(questions)
-
-    # For MVP testing: generate dummy answers if not provided
-    if candidate_answers is None:
-        candidate_answers = [q["Answer"] for q in questions]  # assume candidate knows everything
-
-    correct = 0
-
+    scores = []
     for q, ans in zip(questions, candidate_answers):
-        correct_answer = q.get("Answer", "").strip().lower()
-        candidate_answer = ans.strip().lower()
-        if candidate_answer == correct_answer:
-            correct += 1
+        correct_answer = q.get("Answer") or q.get("answer")  # handle key variations
+        score = score_answer(ans, correct_answer)
+        scores.append(score)
 
-    score = (correct / total_questions) * 100
-
-    return {
-        "score": round(score, 2),
-        "correct_answers": correct,
-        "total_questions": total_questions
-    }
+    avg_score = np.mean(scores) if scores else 0
+    return {"score": avg_score, "scores_per_question": scores}
