@@ -1,18 +1,23 @@
 from apps.ai_engine.data_loader import load_questions_dataset
-from apps.ai_engine.inference import evaluate_candidate
+from apps.ai_engine.questions import QuestionManager
+from apps.ai_engine.sessions import CandidateSession
+
 
 questions = load_questions_dataset()
-dummy_answers = [
-    q.get("Answer")
-    or q.get("answer")
-    or q.get("correct_answer")
-    or q.get("CorrectAnswer")
-    or ""   # fallback to empty string instead of None
-    for q in questions
-]
 
-results = evaluate_candidate(questions, dummy_answers)
+manager = QuestionManager(questions)
 
-print("Score:", results["score"])
-print("Correct answers:", len([s for s in results["scores_per_question"] if s > 50]))
-print("Total questions:", len(questions))
+# get 5 random questions
+selected = manager.get_random_questions(count=5)
+
+session = CandidateSession(selected)
+
+# simulate answers (for now we use correct answers)
+for q in selected:
+    session.answer_question(q["Answer"])
+
+session.finish()
+
+report = session.get_report()
+
+print(report)
