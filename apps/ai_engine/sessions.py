@@ -21,24 +21,18 @@ class CandidateSession:
             self.scores.append(s)
 
     def get_report(self):
-        if not self.end_time:
-            raise Exception("Session not finished")
-
+        if not self.scores:   # <-- prevents zero division
+            return {
+            "avg_score": 0.0,
+            "correct": 0,
+            "total": 0
+            }
+    
         avg = sum(self.scores) / len(self.scores)
-        correct_answers = sum(1 for s in self.scores if s >= 0.7)
+        correct = sum(1 for x in self.scores if x == 1.0)
 
         return {
-            "total_questions": len(self.questions),
-            "correct_answers": correct_answers,
-            "score_percent": round(avg * 100, 2),
-            "time_seconds": round(self.end_time - self.start_time, 2),
-            "details": [
-                {
-                    "question": q["Question"],
-                    "candidate_answer": ans,
-                    "correct_answer": q["Answer"],
-                    "score": round(s, 2)
-                }
-                for q, ans, s in zip(self.questions, self.answers, self.scores)
-            ]
+            "avg_score": avg,
+            "correct": correct,
+            "total": len(self.scores)
         }
