@@ -39,6 +39,14 @@ document.querySelectorAll('.cta-btn').forEach(btn => {
     });
 });
 
+// === Start Interview Button Redirect (Home Page) ===
+const startBtn = document.getElementById('startInterviewBtn');
+if(startBtn) {
+    startBtn.addEventListener('click', () => {
+        window.location.href = './pages/professions.html';
+    });
+}
+
 // === Fade-in entire page on load ===
 window.addEventListener("load", () => {
     document.body.classList.add("page-loaded");

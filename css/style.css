@@ -73,6 +73,10 @@ nav {
     cursor:pointer;
 }
 
+[data-link] {
+    cursor: pointer;
+}
+
 
 nav ul {
     display: flex;
@@ -131,6 +135,7 @@ nav ul li a:hover {
     opacity: 0.45;
     border-radius: 50%;
     z-index: 0;
+    pointer-events: none;
 }
 
 /* Fade-in Animation */
@@ -162,6 +167,8 @@ nav ul li a:hover {
   transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
   cursor: pointer;
+    position: relative;
+    z-index: 1;
 }
 
 .start-btn:hover {

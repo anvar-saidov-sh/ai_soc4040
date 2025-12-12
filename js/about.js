@@ -59,3 +59,18 @@ window.addEventListener('scroll', () => {
 window.addEventListener("load", () => {
     document.body.classList.add("page-loaded");
 });
+
+// === Start Interview Button Redirect ===
+const startBtn = document.getElementById('startInterviewBtn');
+
+if (startBtn) {
+    startBtn.addEventListener('click', () => {
+        const currentPath = window.location.pathname;
+        const isInPages = currentPath.includes("/pages/"); // <-- correct check
+
+        // Redirect to professions page
+        const targetPath = isInPages ? "professions.html" : "pages/professions.html";
+
+        window.location.href = targetPath;
+    });
+}
