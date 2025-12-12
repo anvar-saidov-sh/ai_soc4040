@@ -30,4 +30,8 @@ htmlcov/
 .coverage
 .tox/
 .pycache/   
+# Ignore trained models
 finetuned-gpt2/
+*.bin
+*.pt
+*.ckpt
