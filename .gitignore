@@ -30,3 +30,4 @@ htmlcov/
 .coverage
 .tox/
 .pycache/   
+finetuned-gpt2/
