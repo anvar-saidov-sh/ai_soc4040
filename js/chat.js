@@ -1,119 +1,174 @@
+/*************************************************
+ * QUESTION BANK (JSON – STRUCTURED & FAIR)
+ *************************************************/
+const QUESTION_BANK = {
+    backend: [
+        "Can you explain how REST differs from GraphQL?",
+        "How do you manage database connections in FastAPI?",
+        "What is dependency injection and how is it used in FastAPI?",
+        "How do you handle authentication and authorization?",
+        "What strategies do you use for scaling backend services?",
+        "How do you design a clean project structure?"
+    ],
+
+    frontend: [
+        "How does the browser render a web page?",
+        "What are the differences between React and Vue?",
+        "How do you optimize frontend performance?",
+        "What is the virtual DOM?",
+        "How do you handle state management?",
+        "How do you ensure accessibility in web applications?"
+    ],
+
+    designer: [
+        "How do you approach user research?",
+        "Describe your design process from idea to prototype.",
+        "How do you test usability?",
+        "What is a design system?",
+        "How do you collaborate with developers?",
+        "How do you handle design feedback?"
+    ],
+
+    "product-manager": [
+        "How do you define product success?",
+        "How do you prioritize features?",
+        "How do you work with stakeholders?",
+        "What is your experience with product roadmaps?",
+        "How do you handle conflicting requirements?",
+        "How do you validate product ideas?"
+    ],
+
+    "marketing-manager": [
+        "How do you measure campaign success?",
+        "What marketing channels have you used?",
+        "How do you define target audiences?",
+        "How do you manage marketing budgets?",
+        "What tools do you use for analytics?",
+        "How do you improve conversion rates?"
+    ],
+
+    "data-scientist": [
+        "How do you clean messy datasets?",
+        "What is overfitting?",
+        "How do you evaluate a machine learning model?",
+        "Explain bias vs variance.",
+        "What is feature engineering?",
+        "How do you deploy ML models?"
+    ]
+};
+
+/*************************************************
+ * CHAT LOGIC
+ *************************************************/
 document.addEventListener("DOMContentLoaded", () => {
-
-    // ====== CHAT LOGIC WITH MODEL-GENERATED QUESTIONS ======
-    let questionCount = 0;
-    const maxQuestions = 6;
-    let conversationHistory = [];
-
     const chatWindow = document.getElementById("chatWindow");
-    const sendBtn = document.getElementById("sendBtn");
     const userInput = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const interviewComplete = document.getElementById("interviewComplete");
 
-    if (!chatWindow || !sendBtn || !userInput) {
-        console.error("Chat elements not found!");
-        return;
-    }
+    // Selected profession from professions page
+    const profession = localStorage.getItem("profession") || "backend";
+    const questions = QUESTION_BANK[profession];
 
-    // ====== HELPER FUNCTIONS ======
-    function addAIMessage(text) {
+    let currentQuestionIndex = 0;
+    let currentQuestion = "";
+
+    /*************************************************
+     * UI HELPERS
+     *************************************************/
+    function addMessage(text, sender) {
         const msg = document.createElement("div");
-        msg.className = "chat-message ai-message";
+        msg.className = `chat-message ${sender}-message`;
         msg.textContent = text;
-        msg.style.opacity = 0;
         chatWindow.appendChild(msg);
         chatWindow.scrollTop = chatWindow.scrollHeight;
-
-        setTimeout(() => msg.style.opacity = 1, 50);
     }
 
-    function addUserMessage(text) {
-        const msg = document.createElement("div");
-        msg.className = "chat-message user-message";
-        msg.textContent = text;
-        msg.style.opacity = 0;
-        chatWindow.appendChild(msg);
-        chatWindow.scrollTop = chatWindow.scrollHeight;
+    const addUserMessage = (t) => addMessage(t, "user");
+    const addAIMessage = (t) => addMessage(t, "ai");
 
-        setTimeout(() => msg.style.opacity = 1, 50);
-    }
-
-    // ====== FIRST QUESTION ======
-    addAIMessage("Hello! Let's start your interview. Tell me about yourself and your background.");
-
-    // ====== SEND BUTTON HANDLER ======
-    sendBtn.addEventListener("click", async () => {
-        const message = userInput.value.trim();
-        if (!message) return;
-
-        addUserMessage(message);
-        userInput.value = "";
-
-        conversationHistory.push({ role: "user", content: message });
-        questionCount++;
-
-        if (questionCount >= maxQuestions) {
-            endInterview();
-            return;
-        }
-
-        const nextQuestion = await askModelForNextQuestion(conversationHistory);
-        addAIMessage(nextQuestion);
-        conversationHistory.push({ role: "assistant", content: nextQuestion });
-    });
-
-    // ====== LOCAL LLM REQUEST ======
-    async function askModelForNextQuestion(history) {
+    /*************************************************
+     * AI FEEDBACK (EVALUATION ONLY)
+     *************************************************/
+    async function askAI(question, answer) {
         try {
-            const response = await fetch("http://localhost:11434/api/generate", {
+            const res = await fetch("http://127.0.0.1:8000/generate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    model: "llama3.1",
-                    prompt: makeModelPrompt(history)
+                    text: `
+You are an AI interview evaluator.
+
+Profession: ${profession}
+Question: ${question}
+Candidate Answer: ${answer}
+
+Give concise professional feedback:
+- What was good
+- What can be improved
+(2–3 sentences max)
+Do NOT ask a new question.
+`
                 })
             });
 
-            const data = await response.json();
-            return data.response || "Sorry, I couldn't generate a question.";
+            const data = await res.json();
+            return data.reply || "Thank you for your answer.";
         } catch (err) {
-            console.error("Model error:", err);
-            return "Sorry, I couldn't generate a question.";
+            console.error("AI error:", err);
+            return "AI feedback is currently unavailable.";
         }
     }
 
-    function makeModelPrompt(history) {
-        return `
-You are an AI interview coach. Generate ONLY interview questions.
+    /*************************************************
+     * INTERVIEW FLOW
+     *************************************************/
+    async function sendMessage() {
+        const answer = userInput.value.trim();
+        if (!answer) return;
 
-Conversation so far:
-${history.map(m => `${m.role.toUpperCase()}: ${m.content}`).join("\n")}
+        addUserMessage(answer);
+        userInput.value = "";
 
-Based on the candidate's last answer, generate the next interview question.
-Do NOT write explanations or greetings, only the question.
-        `;
+        const feedback = await askAI(currentQuestion, answer);
+        addAIMessage(feedback);
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex >= questions.length) {
+            endInterview();
+        } else {
+            askNextQuestion();
+        }
     }
 
-    // ====== END INTERVIEW ======
+    function askNextQuestion() {
+        currentQuestion = questions[currentQuestionIndex];
+        addAIMessage(currentQuestion);
+    }
+
     function endInterview() {
+        addAIMessage("Interview complete. Great job!");
         document.querySelector(".chat-input-container").style.display = "none";
-        showInterviewComplete();
+        interviewComplete.classList.remove("hidden");
     }
 
-    function showInterviewComplete() {
-        const box = document.getElementById("interviewComplete");
-        box.classList.remove("hidden");
+    /*************************************************
+     * EVENTS
+     *************************************************/
+    sendBtn.addEventListener("click", sendMessage);
+    userInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
 
-        setTimeout(() => {
-            box.classList.add("show");
-        }, 50);
-    }
-
-    // ====== SEE RESULTS BUTTON ======
-    const btn = document.getElementById("seeResultsBtn");
-    if (btn) {
-        btn.addEventListener("click", () => {
-            window.location.href = "results.html";
-        });
-    }
-
-}); // End DOMContentLoaded
+    /*************************************************
+     * START INTERVIEW
+     *************************************************/
+    askNextQuestion();
+});
+/*************************************************
+ * END OF FILE
+ *************************************************/ 
